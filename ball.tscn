@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://clvs6v6xvs0n"]
+
+[ext_resource type="Script" path="res://ball.gd" id="1_6mdej"]
+[ext_resource type="AudioStream" uid="uid://ckkcwtsg5mbvm" path="res://assets/water-drip-45622.mp3" id="2_8tfm8"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_6kgq0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7lq6w"]
+size = Vector2(3, 3)
+
+[node name="Ball" type="CharacterBody2D"]
+collision_mask = 3
+script = ExtResource("1_6mdej")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0.054902, 1, 1)
+scale = Vector2(15, 15)
+texture = SubResource("CanvasTexture_6kgq0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_7lq6w")
+
+[node name="SpawnTimer" type="Timer" parent="."]
+wait_time = 5.0
+autostart = true
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_8tfm8")
+
+[connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]

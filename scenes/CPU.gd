@@ -1,10 +1,8 @@
 extends StaticBody2D
 
-var ball_pos : Vector2
-var dist : int
-var move_by : int
 var win_height : int
 var p_height : int
+var is_moving = false  # Variable to track if the paddle is moving
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -13,16 +11,20 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	#move paddle towards ball
-	ball_pos = $"../Ball".position
-	dist = position.y - ball_pos.y
-	
-	if abs(dist) > get_parent().PADDLE_SPEED * delta:
-		move_by = get_parent().PADDLE_SPEED * delta * (dist / abs(dist))
+	if Input.is_action_pressed("ui_left"):
+		position.y -= get_parent().PADDLE_SPEED * delta
+		if not is_moving:  # Play sound if it's not already playing
+			$MoveSoundCPU.play()
+			is_moving = true  # Set the moving state to true
+	elif Input.is_action_pressed("ui_right"):
+		position.y += get_parent().PADDLE_SPEED * delta
+		if not is_moving:  # Play sound if it's not already playing
+			$MoveSoundCPU.play()
+			is_moving = true  # Set the moving state to true
 	else:
-		move_by = dist
+		if is_moving:  # Stop the sound if we were moving and now we are not
+			$MoveSoundCPU.stop()
+			is_moving = false  # Set the moving state to false
 
-	position.y -= move_by
-	
-	#limit paddle movement to window
+	# Limit paddle movement to window
 	position.y = clamp(position.y, p_height / 2, win_height - p_height / 2)
